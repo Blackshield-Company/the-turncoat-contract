@@ -54,6 +54,7 @@ internal static class Vanilla
     };
     public static readonly FormKey LocTypeDungeon = K(0x0130DB), LocTypeDraugrCrypt = K(0x0130E2), LocTypeBanditCamp = K(0x0130DF), LocTypeMilitaryFort = K(0x0130E7);
     public static readonly FormKey RefTypeMapMarker = K(0x10F63C);
+    public static readonly FormKey RefTypeBoss = K(0x0130F7);
     public static readonly FormKey WhiterunStablesMapMarker = K(0x072879), SolitudeStablesMapMarker = K(0x01635E), MarkarthStablesMapMarker = K(0x0E962F),
         RiftenStablesMapMarker = K(0x096A46), RiverwoodMapMarker = K(0x0162A4), FalkreathMapMarker = K(0x017760), WhiterunWatchtowerMapMarker = K(0x0DB889);
 

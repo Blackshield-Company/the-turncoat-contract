@@ -15,7 +15,7 @@ internal static class ModInfo
 
     // TTC_Main aliases
     const int APlayer = 0, AHjalla = 1, AAmbushLoc = 2, AAmbushMarker = 3, ACaptain = 4, APayroll = 5, AOrders = 6,
-        ATraitorMarker = 7, ATraitor = 8, AWrit = 9;
+        ATraitorMarker = 7, ATraitor = 8, AWrit = 9, ACaptainBoss = 10;
     // TTC_Intro aliases
     const int IPlayer = 0, IMarker = 1, IHjalla = 2;
 
@@ -110,8 +110,17 @@ internal static class ModInfo
         main.Aliases.Add(Forced(ATraitorMarker, "TraitorMarker", FalkreathMapMarker));
         main.Aliases.Add(Created(ATraitor, "Traitor", vane.FormKey, ATraitorMarker, false, Level.Medium, QuestAlias.Flag.InitiallyDisabled | QuestAlias.Flag.StoresText));
         main.Aliases.Add(Created(AWrit, "Writ", writ.FormKey, APlayer, true, Level.Easy, 0));
+        // 0.1.1: the ambush site's boss spot (optional); the script moves the captain there.
+        main.Aliases.Add(new QuestAlias
+        {
+            ID = ACaptainBoss, Type = QuestAlias.TypeEnum.Reference, Name = "CaptainBoss",
+            Flags = QuestAlias.Flag.Optional | QuestAlias.Flag.AllowDead | QuestAlias.Flag.AllowDisabled,
+            Location = new LocationAliasReference { AliasID = AAmbushLoc, RefType = N<ILocationReferenceTypeGetter>(RefTypeBoss) },
+        });
         main.NextAliasID = (uint)main.Aliases.Count;
         main.VirtualMachineAdapter = Vmad.QuestAdapter(Vmad.Script("TTC_MainScript",
+                Vmad.Alias("Captain", qMain, ACaptain), Vmad.Alias("CaptainBoss", qMain, ACaptainBoss), Vmad.Alias("Orders", qMain, AOrders),
+                Vmad.Obj("TTC_PayrollItem", payroll.FormKey), Vmad.Obj("TTC_OrdersItem", orders.FormKey),
                 Vmad.Alias("Hjalla", qMain, AHjalla), Vmad.Alias("Payroll", qMain, APayroll), Vmad.Alias("Traitor", qMain, ATraitor),
                 Vmad.Obj("TTC_State", gState), Vmad.Obj("TTC_RewardGold", gReward), Vmad.Obj("TTC_BribeGold", gBribe),
                 Vmad.Obj("TTC_CompanyBonus", gBonus), Vmad.Obj("TTC_SeriesBSC", gBSC),
@@ -120,6 +129,7 @@ internal static class ModInfo
                 Vmad.Obj("TTC_CaptainShield", shield.FormKey), Vmad.Obj("TTC_VaneRing", ring.FormKey),
                 Vmad.Obj("TTC_MsgUpgrade", msgUpgrade), Vmad.Obj("TTC_TurncoatFaction", turncoats.FormKey),
                 Vmad.Obj("PlayerFaction", PlayerFaction), Vmad.Obj("Gold001", Gold001)))
+            .WithAliasScripts(qMain, ACaptain, Vmad.Script("TTC_CaptainAliasScript"))
             .WithAliasScripts(qMain, APayroll, Vmad.Script("TTC_PayrollAliasScript"))
             .WithAliasScripts(qMain, AOrders, Vmad.Script("TTC_OrdersAliasScript"))
             .WithAliasScripts(qMain, ATraitor, Vmad.Script("TTC_TraitorAliasScript"));
@@ -149,6 +159,9 @@ internal static class ModInfo
         // Hjalla during the questline
         var tStatus = k.TopTopic("TTC_H_Status", qMain, T.TopicStatus, sHjalla);
         k.Info(tStatus, "TTC_H_Status10", T.Status10, new[] { isHjalla, St(CompareOperator.EqualTo, 10) });
+        // 0.1.1: unstick for saves where the captain never had the ledger (works on 0.1.0 saves).
+        var tRecover = k.TopTopic("TTC_H_Recover", qMain, T.TopicRecover, sHjalla);
+        k.Info(tRecover, "TTC_H_RecoverInfo", T.Recover, new[] { isHjalla, St(CompareOperator.EqualTo, 10), PlayerHas(orders.FormKey), PlayerLacks(payroll.FormKey) }, goodbye: true, fragment: "TTC_TIF_Recover");
         k.Info(tStatus, "TTC_H_Status20", T.Status20, new[] { isHjalla, St(CompareOperator.EqualTo, 20) });
         k.Info(tStatus, "TTC_H_Status30", T.Status30, new[] { isHjalla, St(CompareOperator.GreaterThanOrEqualTo, 30), St(CompareOperator.LessThan, 50) });
 
@@ -213,6 +226,8 @@ internal static class T
     public static readonly string[] Decline = { "Then forget we spoke. Loose tongues got four of mine killed." };
 
     public const string TopicStatus = "About the payroll contract...";
+    public const string TopicRecover = "The captain didn't have your ledger. Just these sealed orders.";
+    public static readonly string[] Recover = { "Then he passed it off before he died. Give me those. Hm. A copy, in our own clerk's hand, tucked in with the orders. That's the ledger. Take it." };
     public static readonly string[] Status10 = { "The ambush was at <Alias=AmbushLoc>. Whoever led those raiders will have the ledger. Bring it back." };
     public static readonly string[] Status20 = { "You have the ledger? Then read what else the raider carried. I want a name before I want the coin." };
     public static readonly string[] Status30 = { "Vane's waiting near Falkreath. Arrest him if you can. Kill him if you must. Don't let him talk you sideways." };

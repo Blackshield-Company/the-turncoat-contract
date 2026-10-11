@@ -21,6 +21,12 @@ Message Property TTC_MsgUpgrade Auto
 Faction Property TTC_TurncoatFaction Auto
 Faction Property PlayerFaction Auto
 MiscObject Property Gold001 Auto
+ReferenceAlias Property Captain Auto
+ReferenceAlias Property CaptainBoss Auto
+{Optional: the ambush site's boss spot.}
+ReferenceAlias Property Orders Auto
+Form Property TTC_PayrollItem Auto
+Form Property TTC_OrdersItem Auto
 
 Bool OrdersWereRead = False
 Bool PendingDismiss = False
@@ -32,7 +38,39 @@ Function Begin(ObjectReference akHjalla)
 	EndIf
 	Game.GetPlayer().AddItem(TTC_OathbladeI, 1)
 	SetStage(10)
+	PlaceAtBoss(Captain, CaptainBoss)
+	EnsureItems()
 	SetObjectiveDisplayed(10)
+EndFunction
+
+; 0.1.1: at quest start, and when the captain loads or dies.
+Function EnsureItems()
+	If GetStage() != 10
+		Return
+	EndIf
+	If Game.GetPlayer().GetItemCount(TTC_PayrollItem) > 0
+		PayrollTaken()
+		Return
+	EndIf
+	EnsureOn(Captain, Payroll, TTC_PayrollItem)
+	EnsureOn(Captain, Orders, TTC_OrdersItem)
+EndFunction
+
+; 0.1.1: the orders were picked up. If the captain is dead and the ledger is gone, hand it over.
+Function OrdersTaken()
+	EnsureItems()
+	If GetStage() == 10 && Lost(Captain, TTC_PayrollItem)
+		RecoverPayroll()
+	EndIf
+EndFunction
+
+; 0.1.1: Hjalla's "the captain didn't have your ledger" dialogue.
+Function RecoverPayroll()
+	If GetStage() != 10
+		Return
+	EndIf
+	GiveToPlayer(Payroll, TTC_PayrollItem)
+	PayrollTaken()
 EndFunction
 
 ; Payroll alias: the ledger moved into the player's inventory.
@@ -205,3 +243,56 @@ Event OnUpdate()
 		Stop()
 	EndIf
 EndEvent
+
+; ---------------------------------------------------------------------------
+; 0.1.1: alias-created quest items could be missing from the NPC that should carry them
+; (same bug as Champion's Reforge 0.1.0 / The Gray-Mane Debt 0.1.0). These re-add them by script.
+; ---------------------------------------------------------------------------
+
+; Make sure akHolder carries akBase (unless the player already has it).
+Function EnsureOn(ReferenceAlias akHolder, ReferenceAlias akItem, Form akBase)
+	Actor h = akHolder.GetReference() as Actor
+	If !h || !akBase || Game.GetPlayer().GetItemCount(akBase) > 0 || h.GetItemCount(akBase) > 0
+		Return
+	EndIf
+	ObjectReference r = akItem.GetReference()
+	If !r
+		r = h.PlaceAtMe(akBase, 1, True)
+		akItem.ForceRefTo(r)
+	EndIf
+	h.AddItem(r, 1, True)
+	Debug.Trace("TTC_ EnsureOn: re-added " + akBase + " to " + h)
+EndFunction
+
+; Hand akBase straight to the player (unstick path). The item alias's own pickup event then advances the quest.
+Function GiveToPlayer(ReferenceAlias akItem, Form akBase)
+	Actor player = Game.GetPlayer()
+	If !akBase || player.GetItemCount(akBase) > 0
+		Return
+	EndIf
+	ObjectReference r = akItem.GetReference()
+	If !r
+		r = player.PlaceAtMe(akBase, 1, True)
+		akItem.ForceRefTo(r)
+	EndIf
+	player.AddItem(r, 1)
+	Debug.Trace("TTC_ GiveToPlayer: " + akBase)
+EndFunction
+
+; True when the carrier is dead or gone and no longer has the item.
+Bool Function Lost(ReferenceAlias akHolder, Form akBase)
+	Actor h = akHolder.GetReference() as Actor
+	Return !h || (h.IsDead() && h.GetItemCount(akBase) == 0)
+EndFunction
+
+; Move a spawned NPC from the outdoor map marker to the location's boss spot, if it has one.
+Function PlaceAtBoss(ReferenceAlias akActor, ReferenceAlias akSpot)
+	Actor a = akActor.GetReference() as Actor
+	ObjectReference spot = akSpot.GetReference()
+	If a && spot && !a.IsDead()
+		a.MoveTo(spot)
+		Debug.Trace("TTC_ moved " + a + " to the boss spot")
+	ElseIf a
+		Debug.Trace("TTC_ no boss spot for " + a + "; stays at the map marker")
+	EndIf
+EndFunction

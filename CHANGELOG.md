@@ -2,6 +2,18 @@
 
 All notable changes to this project are documented here. Versions follow [Semantic Versioning](https://semver.org/).
 
+## [0.1.1] - 2026-10-11
+
+Still early beta, not yet playtested in game.
+
+### Fixed
+- The payroll ledger could be missing from the raider captain, so the quest never moved past "find the ambush". The quest now gives the ledger and the sealed orders to the captain by script when it starts, and checks again when he loads and when he dies. If you already carry the ledger, the quest catches up.
+- Picking up the sealed orders when the captain is dead and the ledger is gone now gives you the ledger.
+- Stuck saves (0.1.0): with the sealed orders in your inventory, tell Hjalla "The captain didn't have your ledger." She hands it over and the quest continues.
+
+### Changed
+- The raider captain now waits at the ambush site's boss spot instead of the outdoor map marker (sites without one keep the marker).
+
 ## [0.1.0] - 2026-10-07
 
 Early beta. First public release. It passes every automated check in the build (Papyrus compile, plugin and dialogue validation, round trip, voice file and SEQ checks, FOMOD schema, 15-plugin series compatibility check) but has not been playtested in-game yet.
