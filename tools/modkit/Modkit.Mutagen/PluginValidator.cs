@@ -276,6 +276,24 @@ public static class PluginValidator
                 errors.Add($"{q.EditorID}: NextAliasID {next} must exceed the highest alias id {aliasIds.Max()}");
         }
 
+        foreach (var topic in mod.DialogTopics)
+        {
+            var q = mod.Quests.FirstOrDefault(x => x.FormKey == topic.Quest.FormKey);
+            if (q == null) continue;
+            var names = q.Aliases.Select(a => a.Name ?? "").ToHashSet(StringComparer.OrdinalIgnoreCase);
+            foreach (var info in topic.Responses)
+            {
+                var texts = info.Responses.Select(r => r.Text?.String ?? "").Append(info.Prompt?.String ?? "");
+                foreach (var text in texts)
+                    foreach (System.Text.RegularExpressions.Match m in tagRx.Matches(text))
+                    {
+                        var name = m.Groups[2].Value;
+                        if (m.Groups[1].Value == "Alias" && !names.Contains(name))
+                            errors.Add($"{topic.EditorID}/{info.EditorID}: dialogue uses <Alias={name}> but its quest {q.EditorID} has no such alias");
+                    }
+            }
+        }
+
         // Alias properties anywhere (single or array, own quest or another quest of this plugin):
         // the quest must be in the plugin and the alias must exist.
         var questAliases = records.OfType<IQuestGetter>().ToDictionary(q => q.FormKey, q => q.Aliases.Select(a => (int)a.ID).ToHashSet());
