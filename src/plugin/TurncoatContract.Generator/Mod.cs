@@ -220,7 +220,7 @@ internal static class T
     public static readonly string[] Accept =
     {
         "Then take this writ, and this. A company blade. Plain steel, but it'll grow with the work you do for us.",
-        "The ambush was at <Alias=AmbushLoc>. Bring back the payroll ledger. It carries every route we've ridden.",
+        "The ambush site is marked on your map. Bring back the payroll ledger. It carries every route we've ridden.",
     };
     public const string TopicDecline = "Find someone else.";
     public static readonly string[] Decline = { "Then forget we spoke. Loose tongues got four of mine killed." };
