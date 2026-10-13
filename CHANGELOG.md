@@ -2,6 +2,16 @@
 
 All notable changes to this project are documented here. Versions follow [Semantic Versioning](https://semver.org/).
 
+## [0.1.2] - 2026-10-13
+
+Still early beta, not yet playtested in game.
+
+### Fixed
+- The quest giver's accept line showed a raw location alias.
+
+### Added
+- A build check for cross-quest alias tokens.
+
 ## [0.1.1] - 2026-10-11
 
 Still early beta, not yet playtested in game.

@@ -1,24 +1,24 @@
 # Nexus Mods page: The Turncoat Contract
 
-Early beta: v0.1.1 passed every automated build check but hasn't been playtested in-game. Exact upload-form values are in [NEXUS_FIELDS.md](NEXUS_FIELDS.md).
+Early beta: v0.1.2 passed every automated build check but hasn't been playtested in-game. Exact upload-form values are in [NEXUS_FIELDS.md](NEXUS_FIELDS.md).
 
 ## Page settings
 
 - **Game:** Skyrim Special Edition
 - **Mod name:** The Turncoat Contract
-- **Version:** 0.1.1 (early beta)
+- **Version:** 0.1.2 (early beta)
 - **Category:** Quests and Adventures
 - **Suggested tags:** Quests, Lore-Friendly, Dialogue, Choices and Consequences, Weapons, ESL, No SKSE, Scripted
 - **Requirements:** none.
 - **Permissions (suggested):** source on GitHub under MIT; allow modification with credit, no re-uploads of the archive.
-- **File to upload:** `TurncoatContract-0.1.1.zip` (FOMOD), main file, named "The Turncoat Contract".
+- **File to upload:** `TurncoatContract-0.1.2.zip` (FOMOD), main file, named "The Turncoat Contract".
 
 ## Description (paste into the BBCode editor)
 
 Same text as `nexus/ttc-description.txt` in the workspace:
 
 ```bbcode
-[center][color=#e06c3c][b]EARLY RELEASE (v0.1.1)[/b]: new mod, not yet widely playtested. Please report bugs in the Bugs tab with your Papyrus log lines (grep TTC_). Source: [url=https://github.com/synthalorian/the-turncoat-contract]GitHub[/url][/color][/center]
+[center][color=#e06c3c][b]EARLY RELEASE (v0.1.2)[/b]: new mod, not yet widely playtested. Please report bugs in the Bugs tab with your Papyrus log lines (grep TTC_). Source: [url=https://github.com/synthalorian/the-turncoat-contract]GitHub[/url][/color][/center]
 
 [center][size=6][b]THE TURNCOAT CONTRACT[/b][/size]
 [size=3][i]An ambushed payroll, a sergeant with a short list of people she trusts, and a traitor wearing the Blackshield.[/i][/size][/center]
@@ -26,7 +26,7 @@ Same text as `nexus/ttc-description.txt` in the workspace:
 [line]
 
 [size=4][b]Summary[/b][/size]
-[b]Status: Early beta (v0.1.1).[/b] Every automated build check passes, but it hasn't had wide in-game playtesting yet. It's playable now. Bug reports help shape 0.1.x.
+[b]Status: Early beta (v0.1.2).[/b] Every automated build check passes, but it hasn't had wide in-game playtesting yet. It's playable now. Bug reports help shape 0.1.x.
 A questline for the Blackshield mercenary company. Sergeant [b]Hjalla Iron-Vow[/b] camps by the [b]Solitude Stables[/b]: the company payroll wagon never reached Falkreath, four of hers died with it, and the raiders knew the route. Someone inside sold it.
 
 [size=4][b]The quest[/b][/size]
