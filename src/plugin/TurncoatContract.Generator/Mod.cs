@@ -109,7 +109,7 @@ internal static class ModInfo
         main.Aliases.Add(Created(AOrders, "Orders", orders.FormKey, ACaptain, true, Level.Easy, 0));
         main.Aliases.Add(Forced(ATraitorMarker, "TraitorMarker", FalkreathMapMarker));
         main.Aliases.Add(Created(ATraitor, "Traitor", vane.FormKey, ATraitorMarker, false, Level.Medium, QuestAlias.Flag.InitiallyDisabled | QuestAlias.Flag.StoresText));
-        main.Aliases.Add(Created(AWrit, "Writ", writ.FormKey, APlayer, true, Level.Easy, 0));
+        main.Aliases.Add(Created(AWrit, "Writ", writ.FormKey, APlayer, true, Level.Easy, QuestAlias.Flag.StoresText | QuestAlias.Flag.UsesStoredText));
         // 0.1.1: the ambush site's boss spot (optional); the script moves the captain there.
         main.Aliases.Add(new QuestAlias
         {
@@ -228,7 +228,7 @@ internal static class T
     public const string TopicStatus = "About the payroll contract...";
     public const string TopicRecover = "The captain didn't have your ledger. Just these sealed orders.";
     public static readonly string[] Recover = { "Then he passed it off before he died. Give me those. Hm. A copy, in our own clerk's hand, tucked in with the orders. That's the ledger. Take it." };
-    public static readonly string[] Status10 = { "The ambush was at <Alias=AmbushLoc>. Whoever led those raiders will have the ledger. Bring it back." };
+    public static readonly string[] Status10 = { "The ambush site is marked on your map. Whoever led those raiders will have the ledger. Bring it back." };
     public static readonly string[] Status20 = { "You have the ledger? Then read what else the raider carried. I want a name before I want the coin." };
     public static readonly string[] Status30 = { "Vane's waiting near Falkreath. Arrest him if you can. Kill him if you must. Don't let him talk you sideways." };
 
