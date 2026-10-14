@@ -276,22 +276,77 @@ public static class PluginValidator
                 errors.Add($"{q.EditorID}: NextAliasID {next} must exceed the highest alias id {aliasIds.Max()}");
         }
 
-        foreach (var topic in mod.DialogTopics)
+        // Text replacement tags in dialogue and quest text (widened from the accept-line check).
+        // The engine resolves <Alias=X> against the quest that owns the text: the topic's quest for INFO
+        // responses, prompts and the DIAL name; the quest itself for its name, log entries and objectives.
+        // X must be an alias of that quest that is filled whenever the text can show: not Optional
+        // (an optional alias can be empty) and filled by the quest itself when it starts (forced, unique,
+        // created, from another alias, external, or find-matching). Anything else prints the raw tag.
         {
-            var q = mod.Quests.FirstOrDefault(x => x.FormKey == topic.Quest.FormKey);
-            if (q == null) continue;
-            var names = q.Aliases.Select(a => a.Name ?? "").ToHashSet(StringComparer.OrdinalIgnoreCase);
-            foreach (var info in topic.Responses)
+            static bool FilledAtStart(IQuestAliasGetter a)
             {
-                var texts = info.Responses.Select(r => r.Text?.String ?? "").Append(info.Prompt?.String ?? "");
-                foreach (var text in texts)
-                    foreach (System.Text.RegularExpressions.Match m in tagRx.Matches(text))
-                    {
-                        var name = m.Groups[2].Value;
-                        if (m.Groups[1].Value == "Alias" && !names.Contains(name))
-                            errors.Add($"{topic.EditorID}/{info.EditorID}: dialogue uses <Alias={name}> but its quest {q.EditorID} has no such alias");
-                    }
+                var f = a.Flags.GetValueOrDefault();
+                if (f.HasFlag(QuestAlias.Flag.Optional)) return false;
+                return a.ForcedReference is { IsNull: false } || a.UniqueActor is { IsNull: false }
+                    || a.CreateReferenceToObject != null || a.Location != null || a.External != null
+                    || a.FindMatchingRefNearAlias != null || a.FindMatchingRefFromEvent != null
+                    || a.SpecificLocation is { IsNull: false } || a.Conditions.Count > 0;
             }
+            var questsByKey = mod.Quests.ToDictionary(x => x.FormKey);
+            void CheckTags(string where, IQuestGetter? owner, string? text)
+            {
+                if (string.IsNullOrEmpty(text)) return;
+                foreach (System.Text.RegularExpressions.Match m in tagRx.Matches(text))
+                {
+                    if (m.Groups[1].Value != "Alias") continue;
+                    var name = m.Groups[2].Value;
+                    if (owner == null) { errors.Add($"{where}: uses <Alias={name}> but has no owning quest"); continue; }
+                    var a = owner.Aliases.FirstOrDefault(x => string.Equals(x.Name, name, StringComparison.OrdinalIgnoreCase));
+                    if (a == null)
+                    {
+                        var other = mod.Quests.Where(x => x.FormKey != owner.FormKey && x.Aliases.Any(y => string.Equals(y.Name, name, StringComparison.OrdinalIgnoreCase))).Select(x => x.EditorID);
+                        errors.Add($"{where}: uses <Alias={name}> but its quest {owner.EditorID} has no such alias" + (other.Any() ? $" (it belongs to {string.Join(", ", other)})" : ""));
+                    }
+                    else if (!FilledAtStart(a))
+                        errors.Add($"{where}: uses <Alias={name}> but that alias of {owner.EditorID} is optional or not filled when the quest starts");
+                }
+            }
+            foreach (var q in mod.Quests)
+            {
+                CheckTags($"{q.EditorID} name", q, q.Name?.String);
+                foreach (var o in q.Objectives) CheckTags($"{q.EditorID} objective {o.Index}", q, o.DisplayText?.String);
+                foreach (var st in q.Stages) foreach (var le in st.LogEntries) CheckTags($"{q.EditorID} stage {st.Index} log", q, le.Entry?.String);
+            }
+            foreach (var topic in mod.DialogTopics)
+            {
+                questsByKey.TryGetValue(topic.Quest.FormKey, out var q);
+                CheckTags($"DIAL {topic.EditorID}", q, topic.Name?.String);
+                foreach (var info in topic.Responses)
+                {
+                    var where = $"DIAL {topic.EditorID} / INFO {info.EditorID} [{info.FormKey.ID:X6}]";
+                    CheckTags(where + " prompt", q, info.Prompt?.String);
+                    foreach (var r in info.Responses) CheckTags($"{where} response {r.ResponseNumber}", q, r.Text?.String);
+                }
+            }
+
+            // Notes and books created by an alias: the alias needs Stores Text and Uses Stored Text,
+            // and every tagged alias must exist on that quest and Store Text.
+            foreach (var q in mod.Quests)
+                foreach (var a in q.Aliases)
+                    if (a.CreateReferenceToObject is { } created && mod.Books.TryGetValue(created.Object.FormKey, out var book))
+                    {
+                        var tags = tagRx.Matches(book.BookText?.String ?? "").Where(m => m.Groups[1].Value == "Alias").ToList();
+                        if (tags.Count == 0) continue;
+                        var fl = a.Flags.GetValueOrDefault();
+                        if (!fl.HasFlag(QuestAlias.Flag.UsesStoredText) || !fl.HasFlag(QuestAlias.Flag.StoresText))
+                            errors.Add($"{q.EditorID}: alias {a.Name} creates {book.EditorID}, whose text uses <Alias=...>, but the alias lacks Stores Text and Uses Stored Text");
+                        foreach (var m in tags)
+                        {
+                            var src = q.Aliases.FirstOrDefault(x => string.Equals(x.Name, m.Groups[2].Value, StringComparison.OrdinalIgnoreCase));
+                            if (src == null) errors.Add($"{q.EditorID}: {book.EditorID} uses <Alias={m.Groups[2].Value}> but the quest has no such alias");
+                            else if (!src.Flags.GetValueOrDefault().HasFlag(QuestAlias.Flag.StoresText)) errors.Add($"{q.EditorID}: {book.EditorID} uses <Alias={m.Groups[2].Value}> but that alias does not Store Text");
+                        }
+                    }
         }
 
         // Alias properties anywhere (single or array, own quest or another quest of this plugin):

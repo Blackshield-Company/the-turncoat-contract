@@ -38,6 +38,7 @@ echo "== Plugin"
 dotnet run --project src/plugin/TurncoatContract.Generator -c Release -- \
   --out "$BUILD/plugin" --ids src/plugin/formids.json --papyrus src/papyrus --items src/plugin/vanilla-items.json
 python3 "$KIT/esp_check.py" "$BUILD/plugin/$NAME.esp"
+python3 "$KIT/alias_tags.py" "$BUILD/plugin/$NAME.esp"
 # plugin + SEQ/ + Sound/Voice/ (silent voice files)
 cp -r "$BUILD/plugin/." "$STAGE/00 Core/"
 
