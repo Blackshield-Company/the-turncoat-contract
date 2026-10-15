@@ -1,3 +1,5 @@
+![the-turncoat-contract](.github/preview.png)
+
 # The Turncoat Contract
 
 *An ambushed payroll, a sergeant with a short list of people she trusts, and a traitor wearing the Blackshield.*
