@@ -4,7 +4,7 @@ Game: Skyrim Special Edition
 
 Mod name: The Turncoat Contract
 
-Version: 0.1.3 (early beta)
+Version: 0.1.4 (early beta)
 
 Category: Quests and Adventures
 
@@ -12,9 +12,9 @@ Short summary (221 chars):
 A Blackshield Company questline: find an ambushed payroll, unmask a traitor, then arrest, kill or take his bribe. Your company blade is reforged twice along the way. Unvoiced dialogue. Base game, ESL, no SKSE. Early beta.
 
 Main file:
-- File: TurncoatContract-0.1.3.zip (FOMOD installer)
+- File: TurncoatContract-0.1.4.zip (FOMOD installer)
 - File name: The Turncoat Contract
-- File version: 0.1.3
+- File version: 0.1.4
 - File category: Main Files
 - File description: Early beta. FOMOD installer with TurncoatContract.esp (ESL-flagged), compiled scripts, SEQ file, silent voice files for the unvoiced dialogue, and optional Papyrus sources. Requires only Skyrim Special Edition / Anniversary Edition (1.5.97 or 1.6.x).
 
