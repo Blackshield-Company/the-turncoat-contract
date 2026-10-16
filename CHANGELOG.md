@@ -2,7 +2,7 @@
 
 All notable changes to this project are documented here. Versions follow [Semantic Versioning](https://semver.org/).
 
-## [Unreleased]
+## [0.1.4] - 2026-10-16
 
 Save-compatible with 0.1.3 (no records added or removed, no form IDs changed).
 
