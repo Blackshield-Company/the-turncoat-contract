@@ -2,6 +2,17 @@
 
 All notable changes to this project are documented here. Versions follow [Semantic Versioning](https://semver.org/).
 
+## [Unreleased]
+
+Save-compatible with 0.1.3 (no records added or removed, no form IDs changed).
+
+### Fixed
+- Corporal Vane's bribe line showed the raw tag `<Global=TTC_BribeGold>` instead of the amount. Skyrim does not expand `<Global=...>` tags in NPC subtitles, so the amount now appears in your reply instead ("Make me an offer. (1500 gold)"), where the game fills it in from `TTC_BribeGold`.
+
+### Changed
+- The generator now adds every global named by a `<Global=...>` tag in quest text, player dialogue or message boxes to the owning quest's Text Display Globals automatically (`TextGlobals.Register` in modkit).
+- The build check now fails when a `<Global=...>` tag is in NPC response text, names a global that does not exist, has no owning quest, or names a global missing from that quest's Text Display Globals (dialogue topics, prompts and message boxes are now covered as well as journal and objectives).
+
 ## [0.1.3] - 2026-10-14
 
 Still early beta, not yet playtested in game. Save-compatible with 0.1.2 (no records added or removed, no form IDs changed).

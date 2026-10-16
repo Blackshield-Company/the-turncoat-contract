@@ -42,7 +42,7 @@ A questline for the Blackshield mercenary company. Sergeant [b]Hjalla Iron-Vow[/
 [list]
 [*][b]Arrest[/b] ("Surrender. You'll answer to Hjalla." then report): [b]Oathblade of Mercy[/b] (ebony, 15 damage, absorb health + shock) and [b]Hjalla's Captain Shield[/b] (fortify block, resist magic), 500 gold
 [*][b]Kill[/b] ("There's only one answer for a turncoat." (or kill him any other way), then report): [b]Oathblade of Judgement[/b] (ebony, 15 damage, fire + absorb stamina), 500 gold, Vane's [b]Emerald Signet[/b] (fortify one-handed, stamina) from his body
-[*][b]Take the bribe[/b] ("Make me an offer."): 1,500 gold and Vane's Emerald Signet. Hjalla won't speak to you again, and the blade stays at its second tier
+[*][b]Take the bribe[/b] ("Make me an offer. (1500 gold)"): 1,500 gold and Vane's Emerald Signet. Hjalla won't speak to you again, and the blade stays at its second tier
 [/list]
 
 [size=4][b]Enhanced items[/b][/size]
