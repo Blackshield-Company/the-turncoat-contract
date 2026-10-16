@@ -67,4 +67,30 @@ public static class TextGlobals
             }
         return added;
     }
+
+    /// <summary>
+    /// Build check: every <c>&lt;Global=X&gt;</c> in quest-owned text must name a global of this plugin
+    /// that is in the owning quest's Text Display Globals, and no NPC response text may use the tag.
+    /// </summary>
+    public static List<string> Check(ISkyrimModGetter mod)
+    {
+        var errors = new List<string>();
+        var edids = mod.Globals.ToDictionary(g => g.FormKey, g => g.EditorID ?? "");
+        var names = edids.Values.ToHashSet(StringComparer.OrdinalIgnoreCase);
+        var quests = mod.Quests.ToDictionary(q => q.FormKey);
+        foreach (var (owner, where, text) in OwnedText(mod))
+            foreach (var name in Names(text))
+            {
+                if (!names.Contains(name)) { errors.Add($"{where}: uses <Global={name}> but the plugin has no such global"); continue; }
+                if (!quests.TryGetValue(owner, out var q)) { errors.Add($"{where}: uses <Global={name}> but has no owning quest in this plugin"); continue; }
+                if (!q.TextDisplayGlobals.Any(g => string.Equals(edids.GetValueOrDefault(g.FormKey), name, StringComparison.OrdinalIgnoreCase)))
+                    errors.Add($"{where}: uses <Global={name}> but it is not in the Text Display Globals of its quest {q.EditorID}");
+            }
+        foreach (var t in mod.DialogTopics)
+            foreach (var info in t.Responses)
+                foreach (var r in info.Responses)
+                    foreach (var name in Names(r.Text?.String))
+                        errors.Add($"DIAL {t.EditorID} / INFO {info.EditorID} [{info.FormKey.ID:X6}] response {r.ResponseNumber}: uses <Global={name}> in NPC response text, which the engine never expands; move the value to the prompt or topic text");
+        return errors;
+    }
 }
