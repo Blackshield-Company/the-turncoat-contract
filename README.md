@@ -25,7 +25,7 @@ A questline for the Blackshield mercenary company. Sergeant **Hjalla Iron-Vow** 
 |---|---|---|
 | Arrest | "Surrender. You'll answer to Hjalla." then report | **Oathblade of Mercy** (ebony, 15 damage, absorb health + shock) and **Hjalla's Captain Shield** (fortify block, resist magic), 500 gold |
 | Kill | "There's only one answer for a turncoat." (or kill him any other way), then report | **Oathblade of Judgement** (ebony, 15 damage, fire + absorb stamina), 500 gold, Vane's **Emerald Signet** (fortify one-handed, stamina) from his body |
-| Take the bribe | "Make me an offer." | 1,500 gold and Vane's Emerald Signet. Hjalla won't speak to you again, and the blade stays at its second tier |
+| Take the bribe | "Make me an offer. (1500 gold)" | 1,500 gold and Vane's Emerald Signet. Hjalla won't speak to you again, and the blade stays at its second tier |
 
 ## Items
 

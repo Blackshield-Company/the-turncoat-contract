@@ -293,11 +293,24 @@ public static class PluginValidator
                     || a.SpecificLocation is { IsNull: false } || a.Conditions.Count > 0;
             }
             var questsByKey = mod.Quests.ToDictionary(x => x.FormKey);
+            // <Global=X> needs X in the Text Display Globals of the quest that owns the text. NPC response
+            // text (subtitles) is never expanded, so a tag there always shows raw: put the value in the
+            // player's prompt or topic text instead (TextGlobals.Register fills the lists from the text).
+            var globalEdids = mod.Globals.Select(g => g.EditorID ?? "").ToHashSet(StringComparer.OrdinalIgnoreCase);
+            void CheckGlobal(string where, IQuestGetter? owner, string name)
+            {
+                if (where.Contains(" response ")) { errors.Add($"{where}: uses <Global={name}> in NPC response text, which the engine never expands; move the value to the prompt or topic text"); return; }
+                if (!globalEdids.Contains(name)) { errors.Add($"{where}: uses <Global={name}> but the plugin has no such global"); return; }
+                if (owner == null) { errors.Add($"{where}: uses <Global={name}> but has no owning quest"); return; }
+                if (!owner.TextDisplayGlobals.Any(g => string.Equals(globalIds.GetValueOrDefault(g.FormKey), name, StringComparison.OrdinalIgnoreCase)))
+                    errors.Add($"{where}: uses <Global={name}> but it is not in the Text Display Globals of its quest {owner.EditorID}");
+            }
             void CheckTags(string where, IQuestGetter? owner, string? text)
             {
                 if (string.IsNullOrEmpty(text)) return;
                 foreach (System.Text.RegularExpressions.Match m in tagRx.Matches(text))
                 {
+                    if (m.Groups[1].Value == "Global") { CheckGlobal(where, owner, m.Groups[2].Value); continue; }
                     if (m.Groups[1].Value != "Alias") continue;
                     var name = m.Groups[2].Value;
                     if (owner == null) { errors.Add($"{where}: uses <Alias={name}> but has no owning quest"); continue; }
@@ -327,6 +340,14 @@ public static class PluginValidator
                     CheckTags(where + " prompt", q, info.Prompt?.String);
                     foreach (var r in info.Responses) CheckTags($"{where} response {r.ResponseNumber}", q, r.Text?.String);
                 }
+            }
+
+            foreach (var msg in mod.Messages)
+            {
+                IQuestGetter? q = null;
+                if (!msg.Quest.IsNull) questsByKey.TryGetValue(msg.Quest.FormKey, out q);
+                CheckTags($"MESG {msg.EditorID} title", q, msg.Name?.String);
+                CheckTags($"MESG {msg.EditorID} text", q, msg.Description.String);
             }
 
             // Notes and books created by an alias: the alias needs Stores Text and Uses Stored Text,

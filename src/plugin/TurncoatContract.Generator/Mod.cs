@@ -81,7 +81,6 @@ internal static class ModInfo
 
         // --- Main quest ------------------------------------------------------------------------------------
         var main = k.Quest(qMain, "TTC_Main", T.QuestName, false, Quest.TypeEnum.SideQuest, 60);
-        main.TextDisplayGlobals.Add(L<IGlobalGetter>(gBribe));
         Stage(main, 0, null, flags: QuestStage.Flag.StartUpStage);
         Stage(main, 10, T.Log10);
         Stage(main, 20, T.Log20);
@@ -265,8 +264,8 @@ internal static class T
     public static readonly string[] Arrest = { "...Fine. I'm tired of running. Tell her I'll name names, if she keeps the noose off my neck." };
     public const string TopicFight = "There's only one answer for a turncoat.";
     public static readonly string[] Fight = { "Then let's see what the company taught you!" };
-    public const string TopicBribe = "Make me an offer.";
-    public static readonly string[] Bribe = { "<Global=TTC_BribeGold> gold and my ring. Tell Hjalla I'm dead in a ditch. Nobody ever needs to know otherwise." };
+    public const string TopicBribe = "Make me an offer. (<Global=TTC_BribeGold> gold)";
+    public static readonly string[] Bribe = { "Gold, and my ring. Tell Hjalla I'm dead in a ditch. Nobody ever needs to know otherwise." };
 
     public const string Log10 = "Sergeant Hjalla Iron-Vow of the Blackshield Company hired me to find an ambushed payroll wagon at <Alias=AmbushLoc>. She suspects a traitor in the company. She gave me a plain company blade that she says will grow with the work.";
     public const string Log20 = "I recovered the Blackshield payroll ledger from the raider captain. He carried sealed orders too.";
