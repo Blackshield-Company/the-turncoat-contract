@@ -3,7 +3,7 @@
   <Name>The Turncoat Contract</Name>
   <Author>synthalorian</Author>
   <Version>@VERSION@</Version>
-  <Website>https://github.com/synthalorian/the-turncoat-contract</Website>
+  <Website>https://github.com/Blackshield-Company/the-turncoat-contract</Website>
   <Description>A Blackshield Company questline: an ambushed payroll, a traitor in the ranks, three endings and an upgradeable company blade. Unvoiced dialogue with silent voice files. Base game only, no SKSE. Early beta.</Description>
   <Groups>
     <element>Quests and Adventures</element>
