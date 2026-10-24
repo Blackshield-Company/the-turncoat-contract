@@ -18,7 +18,7 @@ Early beta: v0.1.4 passed every automated build check but hasn't been playtested
 Same text as `nexus/ttc-description.txt` in the workspace:
 
 ```bbcode
-[center][color=#e06c3c][b]EARLY RELEASE (v0.1.4)[/b]: new mod, not yet widely playtested. Please report bugs in the Bugs tab with your Papyrus log lines (grep TTC_). Source: [url=https://github.com/synthalorian/the-turncoat-contract]GitHub[/url][/color][/center]
+[center][color=#e06c3c][b]EARLY RELEASE (v0.1.4)[/b]: new mod, not yet widely playtested. Please report bugs in the Bugs tab with your Papyrus log lines (grep TTC_). Source: [url=https://github.com/Blackshield-Company/the-turncoat-contract]GitHub[/url][/color][/center]
 
 [center][size=6][b]THE TURNCOAT CONTRACT[/b][/size]
 [size=3][i]An ambushed payroll, a sergeant with a short list of people she trusts, and a traitor wearing the Blackshield.[/i][/size][/center]
@@ -95,7 +95,7 @@ Install with [b]Mod Organizer 2[/b] or [b]Vortex[/b] (FOMOD installer) and enabl
 As with any scripted mod, finish the quest before removing it.
 
 [size=4][b]Source[/b][/size]
-Open source (MIT): [url=https://github.com/synthalorian/the-turncoat-contract]github.com/synthalorian/the-turncoat-contract[/url]
+Open source (MIT): [url=https://github.com/Blackshield-Company/the-turncoat-contract]github.com/Blackshield-Company/the-turncoat-contract[/url]
 
 [size=4][b]Credits[/b][/size]
 [list]
